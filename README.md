@@ -18,7 +18,7 @@
 
 
 ## 公式交叉引用
-方程的编号已调好，但是引用的格式没有另外设计，引用请使用自带的$\backslash$ref$\lbrace\rbrace$。
+方程的编号已调好，但是引用的格式没有另外设计，引用请使用自带的 $\backslash$ ref $\lbrace\rbrace$ 。
 
 ## 参考文献
 将bibtex粘贴到.bib文件中进行引用。bibtex文件的获取可在[Google Scholar](https://scholar.google.com)中查找论文后点击下方的cite按钮，在pop page中点击bibtex。
