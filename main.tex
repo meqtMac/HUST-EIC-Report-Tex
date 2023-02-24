@@ -1,0 +1,215 @@
+% compiler: XeLaTeX
+\documentclass[a4paper]{article}
+\input{config}
+
+\title{室内行人定位轨迹的校正方法与可视化系统的设计与开发}
+\def\school{电子信息与通信学院}
+\def\major{XXXXXXXX}
+\def\class{XXXXXXXX}
+\author{XXX}
+\def\studentId{U202011111}
+\def\instructor{XXXX}
+\date{\today}
+
+\begin{document}
+
+\maketitle 
+\tableofcontents
+\thispagestyle{main}
+
+\clearpage
+\setcounter{page}{1}
+\renewcommand{\thepage}{\arabic{page}}
+\section{使用说明}\seccontent
+\begin{description}
+	\seccontent
+    \item[模版来源] 
+    本课程设计模版在华中科技大学本科毕业论文（设计）的基础上修改而来，已上传至\href{https://www.overleaf.com/}{@overleaf Template} ，源模版的详细描述如下。源模版可在\href{https://www.overleaf.com/latex/templates/husttex-hua-zhong-ke-ji-da-xue-ben-ke-lun-wen-xi-lie-mo-ban/ydnfhgxgsxkn}{@overleaf}中找到。
+    
+	\item[源模版信息] 
+    作者：冯洲 \href{https://github.com/zfengg}{@zfengg}. 版本信息：2019/1/23, v1.0发布在 \href{https://github.com/zfengg/HUSTtex}{HUSTtex} 仓库。 如果有任何建议及纠正，欢迎 \href{https://github.com/zfengg/HUSTtex/issues}{Issue} 或者 \href{https://github.com/zfengg/HUSTtex/pulls}{Pull request}！
+    \item[排版软件]  建议在\href{https://www.overleaf.com/latex/templates/husttex-hua-zhong-ke-ji-da-xue-ben-ke-lun-wen-xi-lie-mo-ban/ydnfhgxgsxkn}{@overleaf}中编写，编译器请使用Xe\LaTeX。
+    
+	\item[本地编译条件]  
+ 
+     安装最新版本的 \href{http://www.tug.org/texlißve/}{TeXLive}（推荐）或 \href{http://miktex.org/}{MiKTeX}。请确保所有宏包都更新至最新。因为中文支持利用的是包\textbf{XeCJK}，所以编译器请使用 Xe\LaTeX。 编辑器推荐 \href{http://texstudio.sourceforge.net/}{TeXstudio}。 源模版在 Windows, Linux, MacOS 编译通过。更改后未测试。
+	\item[图表引用] 图标的编号及题注已设计符合要求，如要引用, 请使用$\backslash$reffig$\lbrace\rbrace$ 引用图，$\backslash$reftab$\lbrace\rbrace$引用表格，以达到要求样式。
+	\item[公式交叉引用] 方程的编号已调好，但是引用的格式没有另外设计，引用请使用自带的$\backslash$ref$\lbrace\rbrace$。
+	\item[参考文献] 将bibtex粘贴到.bib文件中进行引用。bibtex文件的获取可在\href{https://scholar.google.com}{Google Scholar}网页中查找论文后点击下方的cite按钮，在pop page中点击bibtex。
+    \item[LaTeX公式转换] 图片转LaTeX公式工具推荐\href{https://snip.mathpix.com}{@snip}需注册，免费版有每月100张图片的限制。
+ 
+\end{description}
+
+\section{项目描述}
+\subsection{项目背景}
+\subsubsection{室内定位}
+随着智能设备的普及，基于位置的服务(LBS)成为人们日常生活中必不可 少的一部分。现代人有 80\%的时间是在室内度过的。如何在室内环境中准确地确 定用户的位置，成为近年来的一个热门研究课题。
+
+在室外空间，以 GPS、北斗为代表的卫星定位系统能够满足人们在户外开阔 环境中的定位需求;但在室内环境中，由于建筑结构、室内障碍物对卫星信号的 阻挡和反射，卫星定位系统会产生较大的定位误差。
+
+因此，研究者们提出了多种基于无线信号的室内定位方案，利用的信号包括 Wi-Fi、蓝牙、超声波、超宽带、惯性传感器、红外线、声信号等。
+
+\subsubsection{行人航位推算}
+在行人定位领域\cite{qbz}，行人航位推算(PDR\cite{li2019rmaptafa})是一种主流方法。传统的PDR算法依赖惯性测量单元(Inertia Measurement Unit，IMU)收集行人的加速度、角速度等信息，进而推算行人的运动轨迹，见\reffig{pdrfig}。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.5\textwidth]{fig/pdr.png}
+	\caption{PDR示意图}
+	\label{pdrfig}
+\end{figure}
+
+$$ x_t = x_{t-1} + l_{t-1} \times \cos \theta_{t-1} $$
+$$ y_t = y_{t-1} + l_{t-1} \times \sin \theta_{t-1} $$
+
+假设前一步点的位置为$(x_{t-1},y_{t-1})$，$t-1$到$t$时刻之间的步长为$l_{t-1}$，行进
+方向角度为$\theta_{t-1}$。根据上式即可解出$t$时刻行人的估计位置$(x_t, y_t)$。
+
+PDR算法主要包括步频检测、步长估计、航向估计三个任务。
+\subsubsection{基础PDR算法}
+\begin{itemize}
+    \item 步频检测:波峰测频法 
+    
+    被测人员走动且手持终端时，随着人的周期性运动，三轴加速度传感器的波形也会产生周期性的变化，见\reffig{accxyz}，其中以竖直方向（Z轴）上的加速度变化最为明显。当一个有效波峰出现，即可认为移动了一步。按此原理即可估计出行人的步频。
+    \begin{figure}[htbp]
+    	\centering
+    	\includegraphics[width=0.75\textwidth]{fig/accxyz.png}
+    	\caption{三轴加速度传感器的波形}
+    	\label{accxyz}
+    \end{figure}  
+    \item 步长估计:Weinberg算法 
+    
+    步长估计利用Weinberg算法实现，与最大加速度和最小加速度相关。
+    $$ l_n = K \times \left( a_n^{max} - a_n^{min}\right)^{ \frac{1}{4}}$$
+    其中，$l_n$是第$n$步的步长；$a_n^{max}$和$a_n^{min}$分别表示第$n$步的Z轴加速度最大值和最小值；$K$为常数。
+    \item 航向估计:角速度积分
+
+    航向估计通常使用陀螺仪和电子罗盘这两种传感器。我们这里以基于陀螺仪的航向估计算法为例。陀螺仪可以测量人运动时的三轴角速度，对角速度进行积分即可计算出运动航向的变化角度值。如果已知航向的初始值，就可以计算出当前时刻的绝对航向。
+\end{itemize}
+\subsubsection{定位效果评价指标}
+评价一个定位算法的定位精度，我们通常有如下几个指标：
+\begin{enumerate}
+    \item 平均定位误差：计算所有测试点的定位误差（估计位置与真实位置之间的物理距离），求平均值。
+    \item 误差累积分布曲线（CDF）：各测试点定位误差的累计分布函数，它的横坐标表示定位误差，对应的纵坐标表示误差小于这个值的测试点的出现的频率。即$$F_E(x) = P(E\leq x)$$
+    \item 百分位误差
+
+    百分位误差指在CDF图中，纵坐标取一定百分比时，对应横坐标表示的定位误差。我们常用的百分位误差有$50\%$误差，$75\%$误差，$90\%$误差等。
+\end{enumerate}
+
+\subsection{系统描述}
+\subsubsection{系统功能}
+基本要求
+\begin{itemize}
+    \item 合理设计网页布局，包括：室内地图区、信息显示区、定位指标计算区等；设计一个菜单作为初始界面。
+    \item 在室内地图区，需要呈现室内平面图、行人真实轨迹和定位轨迹。用户能够通过点击定位轨迹中的点，查看不同位置的传感器信息（三轴加速度、角速度等）和行人航位信息（位移和航向），并在信息显示区显示。
+    \item 在定位指标计算区，需要实时计算并展示当前定位轨迹的平均定位误差、百分位定位误差、CDF曲线等定位指标。
+    \item 系统需通过数据库实现信息的存储与交互。
+    \item 定位轨迹至少需要实现两种
+        \begin{itemize}
+        \item 直接定位点的轨迹
+        \item 使用一个直接定位点作为初始点，实现PDR的基础算法来估计行人轨迹。
+        \end{itemize}
+    \item 软件系统可以通过上传csv文件（格式见数据文件），实时计算PDR算法的定位结果，绘制定位轨迹，显示定位指标。
+\end{itemize}
+% 选做要求
+% \begin{itemize}
+%     \item 对定位轨迹中每个点的航位信息进行数据可视化展示（如：绘制向量图等）。
+%     \item 阅读PDR相关论文，自行设计并实现一种改进的PDR算法或者PDR校正定位点算法，在该软件系统中实现。
+%     \item 美观且友好的可视化前端和良好的数据库设计是加分项。
+% \end{itemize}
+\subsubsection{系统架构}
+该软件的系统架构为B/S架构，前端负责网页设计，后端负责编写API接口， 调用设计的算法并利用数据库中的数据并来实现对室内行人定位轨迹的校正，并在网页上实现轨迹的可视化。后端通过API接口平台，测试对应的API接口;前端利用API接口，测试网页显示内容是否正确，交互是否成功。算法模型通过CDF曲线以及平均定位误差来判断优劣;联调测试:前后端联调，观察软件是否达到理想的效果，是否满足了所有的用户需求。
+
+% \subsection{模型描述}
+\subsection{模型描述}
+\subsubsection{前后端交互模型}
+\subsubsection{算法模型}
+
+\sectionbreak
+\section{软件设计}
+\subsection{模块层次}
+\subsection{技术选型}
+\subsection{技术实现}
+\subsubsection{算法}
+\paragraph{算法设计}
+\paragraph{后端设计}
+\paragraph{前端设计}
+
+\sectionbreak
+\section{设计结果}
+
+\sectionbreak
+\section{总结与建议}
+
+
+\sectionbreak
+\section{方程及图表}
+\hspace{12em}\hongzifuzhu{黑体小二加粗居中}
+\hongzifuzhu{黑体4号加粗，字母、阿拉伯数字为Times New Roman 4号加粗}
+
+$ \times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times $，其 $ \times\times\times\times\times$ 可表示如下：
+\begin{equation}
+	E_{1}=A_{1}sin\!\left(2\pi f_{1}t+\varphi_{01}+\varphi_{path1} \right)
+\end{equation}
+\begin{equation}
+	E_{2}=A_{2}sin\!\left(2\pi f_{2}t+\varphi_{02}+\varphi_{path2} \right)
+\end{equation}
+
+$ \times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times $  (如\reftab{table1} 所示)
+
+\begin{table}[htpb]
+	\centering
+	\caption{样表}
+	\label{table1}
+	\song\wuhao\bfseries
+	\begin{tabular}{cccc}
+		\toprule
+		$ \times\times\times\times\times $ & $ \times\times\times $ & $ \times\times\times $ & $ \times\times\times $ \\
+		\hline
+		$ \times\times\times\times\times $ & $ \times\times $       & $ \times\times $       & $ \times\times $       \\
+		$ \times\times\times\times\times $ & $ \times\times $       & $ \times\times $       & $ \times\times $       \\
+		$ \times\times\times\times\times $ & $ \times\times $       & $ \times\times $       & $ \times\times $       \\ 	    	\cline{2-4}
+		$ \times\times\times\times\times $ & $ \times\times $       & $ \times\times $       & $ \times\times $       \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+\textcolor{red}{（表标题：位于表格上方，黑体小4号，字母、阿拉伯数字为Time New Roman 小4号，表内容：宋体5号，字母、阿拉伯数字为Time New Roman 5号）\\ ``\fbox{\phantom{a}}''表示空格}
+
+$ \times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times $  (如\reffig{testfig}所示)
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{testmindmap}
+	\caption{测试图片, 因为学校模板给的word中的图片就是从这上面截取的部分，所以另存为PNG之后就是这个样子}
+	\label{testfig}
+\end{figure}
+$ \times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times\times $  (如\reffig{E8} 所示)
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{E8Petrie}
+	\caption{测试图片: E8 李群}
+	\label{E8}
+\end{figure}
+\textcolor{red}{(图标题：位于图下方，黑体小4号，字母、阿拉伯数字为Time New Roman 小4号)}
+
+\sectionbreak
+
+% 参考文献 %
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{参考文献}
+\bibliographystyle{plain}
+\bibliography{cite}\label{bibtexref}
+
+%  附录  %
+\clearpage
+\appendix
+\phantomsection
+\addcontentsline{toc}{section}{附录}
+\section*{附录}
+% 重置附录 section 格式
+\renewcommand{\thesubsection}{\thesection\Alph{subsection}}
+\subsection{前端代码结构}
+\subsection{后端代码结构}
+
+\end{document}

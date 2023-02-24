@@ -1,0 +1,241 @@
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3cm,right=3cm,% margins
+			headheight=1.5cm,headsep=1.5em,
+			footskip=2em,
+			]{geometry}
+
+% 载入常用的数学包, 符号包
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{blindtext}
+
+%% linespace 行间距，段间距等等
+\usepackage{setspace}
+% \usepackage{indentfirst} % then the first line of each title should start with a indent.
+% 定义标题和段落样式
+% 定义1.5倍行距
+\renewcommand{\baselinestretch}{1.62}
+\setlength{\baselineskip}{12pt}   % set the fixed value of the lineskip
+\setlength\parskip{\baselineskip} % set the space between the paragraphs, set the variable \parskip \baselineskip
+% parindent
+\setlength{\parindent}{0pt}
+
+% fonts (style, color, size). 
+\usepackage{ctex}		 	% If you are lazy, the CTEX suit is enough.
+
+% Chinese font
+\usepackage{xeCJK}		 	% For the Chinese through XeLaTex
+\setCJKmainfont{FandolSong} 	% set the mainfont of Chinese as songti. (serif) for  
+\setCJKsansfont{FandolSong}	% sans serif font for \textsf
+\setCJKmonofont{FandolSong}	% monospace font for \texttt
+% \punctstyle{kaiming}   	% Remove the space used by symbols like comma. Special for the mainland students like us HUSTers.
+\setCJKfamilyfont{song}{FandolSong} 
+\newcommand{\song}{\CJKfamily{song}} %宋体 song
+\setCJKfamilyfont{kai}{FandolKai} 
+\newcommand{\kai}{\CJKfamily{kai}} %楷体2312  kai
+\setCJKfamilyfont{hwzs}{FandolFang}
+\newcommand{\hwzs}{\CJKfamily{hwzs}} %华文中宋  hwzs
+\setCJKfamilyfont{hei}{FandolHei} 
+\newcommand{\hei}{\CJKfamily{hei}} %黑体  hei
+
+% English font
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Times New Roman}
+\setmonofont{Times New Roman}
+% font Color 利用definecolor自己可以定义颜色
+\usepackage{xcolor}
+\definecolor{MSBlue}{rgb}{.204,.353,.541}
+\definecolor{MSLightBlue}{rgb}{.31,.506,.741}
+% font Size 
+\newcommand{\xiaochuhao}{\fontsize{36pt}{\baselineskip}\selectfont}
+\newcommand{\erhao}{\fontsize{21pt}{\baselineskip}\selectfont}
+\newcommand{\xiaoerhao}{\fontsize{18pt}{\baselineskip}\selectfont}
+\newcommand{\sanhao}{\fontsize{15.75pt}{\baselineskip}\selectfont}
+\newcommand{\sihao}{\fontsize{14pt}{18pt}\selectfont}
+\newcommand{\xiaosihao}{\fontsize{12pt}{18pt}\selectfont}
+\newcommand{\wuhao}{\fontsize{10.5pt}{18pt}\selectfont}
+
+%% header and footer 
+\usepackage{fancyhdr} % for header and footer
+% header
+\newcommand{\headstyle}{
+ \fancyhead[C]{ \hwzs\wuhao 华中科技大学软件课程设计}
+}
+% 设置页脚样式
+\newcommand{\footstyle}{\fancyfoot[C]{\wuhao\thepage}
+ \fancyfoot[L]{\rule[5pt]{6.7cm}{0.4pt}}
+ \fancyfoot[R]{\rule[5pt]{6.7cm}{0.4pt}}
+}
+\pagestyle{fancy}
+\fancyhf{} % 清空原有样式
+\headstyle
+\footstyle
+% 定义一种新的格式叫做main
+\fancypagestyle{main}{%
+ \fancyhf{} % 清空原有样式
+ \headstyle
+ \footstyle
+}
+\renewcommand{\headrulewidth}{0.4pt}
+% \renewcommand{\footrulewidth}{0.4pt}
+% \renewcommand{\headrule}{\rule{\textwidth}{0.4pt}}
+
+% set the styles of sections at all levels
+\usepackage{titlesec}
+\usepackage{titletoc}
+\titleformat{\section}{\centering\hei\bfseries\xiaoerhao}{\thesection}{1em}{} % 在section标题编号后面加个点
+\titleformat*{\subsection}{\raggedright\hei\bfseries\sihao}
+\titleformat*{\subsubsection}{\raggedright\hei\bfseries\xiaosihao}
+\titleformat{\paragraph}[hang]{\raggedright\hei\bfseries\xiaosihao}{\theparagraph}{1em}{}[]
+
+% manual
+% \titleformat{command}[shape]{format}{label}{sep}{before-code}[after-code]
+% \titlespacing{command}{left}{before-sep}{after-sep}
+% 设置新的层级subsubsubsection
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+\newcommand{\sectionbreak}{\clearpage} % 小节从新的一页开始
+% 根据学校要求设置新的section, subsection, subsection,  paragraph
+
+% set the content of section and so on
+\newcommand\seccontent{
+	\song
+	\xiaosihao % 默认五号字体, 行间距为1.5*\baselineskip
+    \setlength{\parindent}{2em} % 首段缩进两个M字符
+    \setlength{\parskip}{0pt}
+    }
+\newcommand\tabcontent{
+	\song
+	\wuhao % 默认五号字体, 行间距为1.5*\baselineskip
+	\setlength{\parindent}{2em} % 首段缩进两个M字符
+	\setlength{\parskip}{0pt}
+}
+
+% ---------------------------------------------------------------------------- %
+% for the style of theorems, definitions, proofs and remarks 定义数学里面一些常用的环境
+\usepackage{amsthm}
+\newtheorem{thm}{\textbf{定理}}[section]
+% The section in [] can be replaced by chapter or subsection
+\theoremstyle{definition} 
+\theoremstyle{plain}
+\theoremstyle{remark}
+
+% ---------------------------------------------------------------------------- %
+% for the caption and reference 图表及公式的编号规范
+\usepackage{float} 		 		  	% table figure positioning
+\usepackage{caption}
+\captionsetup[figure]{labelformat=default, labelsep=quad,name={图}}
+\captionsetup[table]{labelformat=default,labelsep=quad,name={表}}
+% 设置图表标题的计数方式
+\renewcommand{\thefigure}{\ifnum \thesection>0 \thesection-\fi \arabic{figure}} % set caption label style to 2-1
+\renewcommand{\thetable}{\ifnum \thesection>0 \thesection-\fi \arabic{table}} % set caption label style to 2-1
+\DeclareCaptionFont{mylabelfont}{\hei\xiaosihao}
+\captionsetup[figure]{font=mylabelfont}
+\captionsetup[table]{font=mylabelfont}
+
+% 设置图表的autoref的格式
+\newcommand{\reffig}[1]{图 \ref{#1}}
+\newcommand{\reftab}[1]{表 \ref{#1}}
+% 公式的编号格式
+\renewcommand\theequation{\arabic{section}-\arabic{equation}}
+
+\usepackage{graphicx} % To include graphixs 添加图所需的包
+\usepackage{booktabs} % To create three line table including the commands toprule, bottomrule, and midrule
+% 使用tabularx库并定义新的左右中格式
+\usepackage{tabularx}
+\usepackage{makecell}
+\newcolumntype{L}{X}
+\newcolumntype{C}{>{\centering \arraybackslash}X}
+\newcolumntype{R}{>{\raggedright \arraybackslash}X}
+
+% ---------------------------------------------------------------------------- %
+% set the style of counters
+\makeatletter
+\@addtoreset{footnote}{page}
+\@addtoreset{figure}{section}
+\@addtoreset{table}{section}
+\@addtoreset{equation}{section}
+\makeatother
+
+% ---------------------------------------------------------------------------- %
+% tableofcontents, listoftables and listoffigures 目录
+%\renewcommand\listfigurename{插图列表}
+%\renewcommand\listtablename{表格列表}
+%\titlecontents{标题名}[左间距]{标题格式}{标题标志}{无序号标题}{指引线与页码}[下间距]
+%\dottedcontents{section}[2.55em]{\song \xiaosihao \bfseries}{2.5em}{1em}
+\usepackage{tocloft}
+\renewcommand{\contentsname}{\centerline{ \hei\bfseries\xiaoerhao 目\hspace{2em}录}}
+\titlecontents{section}[3em]{\song\xiaosihao\bfseries}{\contentslabel{3em}}{\hspace*{-3em}}{\normalfont\titlerule*[8pt]{.}\contentspage}
+\titlecontents{subsection}[3em]{\song\xiaosihao}{\contentslabel{3em}}{\hspace*{-3em}}{\titlerule*[8pt]{.}\contentspage}
+\titlecontents{subsubsection}[4em]{\song\xiaosihao}{\contentslabel{4em}}{\hspace*{-4em}}{\titlerule*[8pt]{.}\contentspage}
+\titlecontents{paragraph}[5em]{\song\xiaosihao}{\contentslabel{5em}}{\hspace*{-5em}}{\titlerule*[8pt]{.}\contentspage}
+
+% reference and citation 参考文献
+\usepackage{natbib}
+\renewcommand{\refname}{\centering\hei\xiaoerhao 参考文献}
+\bibsep=0pt % 用来设置每个\bibitem之间的间距
+% \newcommand{\upcite}[1]{\textsuperscript{\textsuperscript{\cite{#1}}}} % show citation label in the upperscript
+
+% 使用特殊符号
+\usepackage{amssymb}
+\usepackage{wasysym}
+
+% 制作tatement中的符号
+\def\HUSTcheckedbox{$\Square\!\!\!\!\checkmark$}
+\def\HUSTbox{$\Square$}
+
+\newcommand{\makestatement}[2]{\statement{#1}{#2}}
+
+\usepackage{enumitem}
+\setlist{noitemsep}
+
+\usepackage{listings} % For the code. 代码
+\usepackage[bookmarks=true,colorlinks,linkcolor=black,citecolor=black,urlcolor=purple]{hyperref}
+\usepackage{appendix}
+\renewcommand{\appendixname}{附录}
+
+% titlepage
+\usepackage{titling}
+% 重置命令 maketitle
+\renewcommand{\maketitle}{
+	\def\HUSTtitlelength{12em}
+ 	\begin{titlepage}
+		\begin{center}
+			\vspace*{0em}
+			\includegraphics[height=1.61cm]{fig/HUSTlogo.eps}\\
+			\vspace*{4em}
+			{\xiaochuhao \hwzs \bfseries 软件课程设计报告(个人)}\\
+			\vspace*{6em}
+			{\erhao \kai \bfseries \thetitle}
+
+			\vspace*{6em}
+			{\sanhao \hwzs
+				\renewcommand\arraystretch{2}
+				\begin{tabular}{lc}
+					\makebox[4em][s]{院 \hfill 系} &
+					\underline{\makebox[\HUSTtitlelength]{\school}} \\
+     	              \makebox[4em][s]{专业} &
+					\underline{\makebox[\HUSTtitlelength]{\major}} \\
+     	              \makebox[4em][s]{班级} &
+					\underline{\makebox[\HUSTtitlelength]{\class}} \\
+					\makebox[4em][s]{姓 \hfill 名} &
+					\underline{\makebox[\HUSTtitlelength]{\theauthor}} \\
+					\makebox[4em][s]{学 \hfill 号} &
+					\underline{\makebox[\HUSTtitlelength]{\studentId}} \\
+					\makebox[4em][s]{指导教师} &
+					\underline{\makebox[\HUSTtitlelength]{\instructor}} \\
+ 					\makebox[4em][s]{日\hfill 期} &
+					\underline{\makebox[\HUSTtitlelength]{\thedate}} \\
+			  \end{tabular}
+		    }
+
+			\vspace{4em}
+			{\sanhao \hwzs \thedate}
+		\end{center}
+	\end{titlepage}
+}
+
+\newcommand{\hongzifuzhu}[1]{\textcolor{red}{\kai \wuhao(#1)}}
