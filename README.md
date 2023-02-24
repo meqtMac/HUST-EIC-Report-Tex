@@ -11,14 +11,14 @@
 建议在[overleaf](https://www.overleaf.com)中编写，编译器请使用Xe $\LaTeX$ 。
     
 ## 本地编译条件
-安装最新版本的[TeXLive](http://www.tug.org/texlive/)（推荐）或 [MiKTeX](http://miktex.org/)。请确保所有宏包都更新至最新。因为中文支持利用的是包\textbf{XeCJK}，所以编译器请使用 Xe $\LaTeX$ 。 编辑器推荐[TeXstudio](http://texstudio.sourceforge.net/)。 源模版在 Windows, Linux, MacOS 编译通过。更改后未测试。
+安装最新版本的[TeXLive](http://www.tug.org/texlive/)（推荐）或 [MiKTeX](http://miktex.org/)。请确保所有宏包都更新至最新。因为中文支持利用的是包`XeCJK`，所以编译器请使用 Xe $\LaTeX$ 。 编辑器推荐[TeXstudio](http://texstudio.sourceforge.net/)。 源模版在 Windows, Linux, MacOS 编译通过。更改后未测试。
 
 ## 图表引用
-图标的编号及题注已设计符合要求，如要引用, 请使用 $\backslash$ reffig $\lbrace\rbrace$ 引用图，$\backslash$ reftab $\lbrace\rbrace$ 引用表格，以达到要求样式。
+图标的编号及题注已设计符合要求，如要引用, 请使用 `\reffig{}`引用图，`\reftab{}` 引用表格，以达到要求样式。
 
 
 ## 公式交叉引用
-方程的编号已调好，但是引用的格式没有另外设计，引用请使用自带的 $\backslash$ ref $\lbrace\rbrace$ 。
+方程的编号已调好，但是引用的格式没有另外设计，引用请使用自带的`\ref{}` 。
 
 ## 参考文献
 将bibtex粘贴到.bib文件中进行引用。bibtex文件的获取可在[Google Scholar](https://scholar.google.com)中查找论文后点击下方的cite按钮，在pop page中点击bibtex。
